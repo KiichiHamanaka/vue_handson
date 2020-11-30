@@ -43,12 +43,12 @@ Amaz◯nみたいなECサイト
 
 
 ### Vueオブジェクト
-データバインディング
-data
-el
-filters
-methods
-computed
+コンストラクタオプション
+- data
+- el
+- filters
+- methods
+- computed
 
 elで指定したDOM要素がマウント対象になる
 elプロパティはDOM要素のオブジェクトかCSSセレクタの文字列を指定できます
@@ -80,15 +80,62 @@ data:{
   items:items
 }
 
-VueインスタンスのデータをHTMLにテキスト展開するとき
+### テンプレート構文
+
+データの変更に応じてビューを更新する仕組みをデータバインディングという
+
+- Mustache記法によるデータの展開 
+{{}}で囲む
+- ディレクティブによるHTML要素の拡張
+標準のHTMLに対して独自の属性を追加したもの v-で名前が始まる属性 後でまた説明します
+
+#### VueインスタンスのデータをHTMLにテキスト展開するとき
 
 ```
 //{{}}で囲む
 <p>{{ items[0].name }}</p>
+//js式も書ける
+<p>{{ items[0].price * items[0].quantitiy }}</p>
+
 ```
 
-filters テキストフォーマット処理を適用する仕組み
+#### テキストだけじゃなく属性にも展開出来る
+Mustache記法は使えないのでv-bindディレクティブを使う
+v-bind:htmlの属性名="dataの属性値"
+```
+<button id="b-button" v-bind:title="loggedInButton" v-bind:disabled="!canBuy">購入</button>
+var vm = new Vue({
+    el: '#b-button',
+    data: {
+        loggedInButton: '非ログイン時のため、購入できません',
+        canBuy: false
+    }
+})
+```
+
+#### filters
+テキストフォーマット処理を適用する仕組み
 DateオブジェクトをYYYY/MM/DDとか0.5を50%に
+```
+filters: {
+  フィルタ名: function value(){
+  //実行内容
+  }
+}
+```
+定義したフィルタは
+```
+{{ 値|フィルタ名 }}
+```
+で使える
+
+ちなみにVue3でfilterは使えなくなるので正直覚えなくてもいいです
+
+#### computed
+
+
+####ComputedとMethodsの違い
+
 ## コンポーネント
 
 ## Vue Rooter
