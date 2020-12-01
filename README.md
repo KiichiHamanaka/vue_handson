@@ -146,18 +146,73 @@ filters: {
 でもこれが&&や||でめちゃめちゃ複雑になったら？
 
 Mustache記法で複雑な処理は保守が大変な上に
-向いてないので
-
-computed内で書きましょう
+そもそもテンプレートには記述出来ない式があるよ
+複雑な処理は基本的にcomputed内で書きましょう
 
     var vm = new Vue({ //関数として実装されるが、参照時はプロパティとして機能
       // ...
         computed: {
-          
+          算出プロパティ名:function(){
+            //hoge
+          }
+        }
+    })
+    
+
+テンプレ内で無理にやろうとする感じの
+```
+<p>{{ items.reduce(function(sum,item){return sum + (item.price*item.quantity),0);}}</p>
+```
+なげー！わからん！
+
+computedで上を治すと・・・？
+
+    //ロードされ,Vueがグローバル変数として定義されているか確認
+    new Vue({
+        //マウントやデータ定義
+        computed:{
+          totalPrice: function () {
+            return this.items.reduce(function (sum, item) {
+                return sum + (item.price * item.quantitiy)
+            }, 0)
+          }
         }
     })
 
-####ComputedとMethodsの違い
+算出プロパティはメソッドじゃないので呼び出す際に()いりませーん
+
+
+```
+            totalPriceWithTax: function () {
+                    return Math.floor(this.totalPrice * 1.08)
+            }
+```
+
+算出プロパティに依存した算出プロパティも定義できるよーん
+
+
+#### thisは何なの
+算出プロパティやメソッドでデータや算出プロパティを参照したいときはthis経由で参照します
+thisがサスのはVueインスタンス自身になる
+
+## ディレクティブ
+Vue.jsでは標準のHTMLに対して独自の属性を追加することで、属性値の式の変化に応じたDOM操作を行います
+この特別な属性のことをディレクティブといいます。 v-から始まる属性名を持つ
+ディレクティブの属性値にはJS式を与える
+
+### よく使うであろうディレクティブ
+- v-if/v-show
+- v-bind 
+
+#### v-if/v-show(条件付きレンダリング)
+
+引数がtrueのときだけ表示する
+頻繁に切り替わるやつはshow使え
+
+#### v-bind(属性に値をバインド)
+v-bind:classは:classにv-bind:styleは:styleのように省略出来るよ！
+
+#### ComputedとMethodsの違い
 
 ## コンポーネント
 
