@@ -58,13 +58,16 @@ elプロパティはDOM要素のオブジェクトかCSSセレクタの文字列
 ### data(UIのデータ定義)
 dataプロパティにはUIの状態となるデータのオブジェクトを指定します
 
+```
 data:{
   キー: 値,
   キー: 値,
   ...
   キー: 値,
 }
+```
 
+```
 var items = [{
     name: '鉛筆',
     price: 300,
@@ -82,6 +85,8 @@ var items = [{
 data:{
   items:items
 }
+```
+
 
 #### テンプレート構文
 
@@ -99,12 +104,12 @@ data:{
 <p>{{ items[0].name }}</p>
 //js式も書ける
 <p>{{ items[0].price * items[0].quantitiy }}</p>
-
 ```
 
 ##### テキストだけじゃなく属性にも展開出来る
 HTMLの属性に対してはMustache記法は使えないのでv-bindディレクティブを使う
 v-bind:htmlの属性名="dataの属性値"
+
 ```
 <button id="b-button" v-bind:title="loggedInButton" v-bind:disabled="!canBuy">購入</button>
 var vm = new Vue({
@@ -119,6 +124,7 @@ var vm = new Vue({
 #### filters(フィルタ)
 テキストフォーマット処理を適用する仕組み
 DateオブジェクトをYYYY/MM/DDとか0.5を50%に
+
 ```
 filters: {
   フィルタ名: function value(){
@@ -126,10 +132,13 @@ filters: {
   }
 }
 ```
+
 定義したフィルタは
+
 ```
 {{ 値|フィルタ名 }}
 ```
+
 で使える
 
 ちなみにVue3でfilterは使えなくなるので正直覚えなくてもいいです
@@ -138,6 +147,7 @@ filters: {
 データから派生するデータをプロパティとして公開する仕組み
 
 あれさっきこんなんやらんだ？
+
 ```
 //js式も書ける
 <p>{{ items[0].price * items[0].quantitiy }}</p>
@@ -149,43 +159,48 @@ Mustache記法で複雑な処理は保守が大変な上に
 そもそもテンプレートには記述出来ない式があるよ
 複雑な処理は基本的にcomputed内で書きましょう
 
-    var vm = new Vue({ //関数として実装されるが、参照時はプロパティとして機能
-      // ...
-        computed: {
-          算出プロパティ名:function(){
-            //hoge
-          }
-        }
-    })
-    
+```
+new Vue({ //関数として実装されるが、参照時はプロパティとして機能
+  // ...
+    computed: {
+      算出プロパティ名:function(){
+        //hoge
+      }
+    }
+})
+```    
 
 テンプレ内で無理にやろうとする感じの
+
 ```
 <p>{{ items.reduce(function(sum,item){return sum + (item.price*item.quantity),0);}}</p>
 ```
+
 なげー！わからん！
 
 computedで上を治すと・・・？
 
-    //ロードされ,Vueがグローバル変数として定義されているか確認
-    new Vue({
-        //マウントやデータ定義
-        computed:{
-          totalPrice: function () {
-            return this.items.reduce(function (sum, item) {
-                return sum + (item.price * item.quantitiy)
-            }, 0)
-          }
-        }
-    })
+```
+//ロードされ,Vueがグローバル変数として定義されているか確認
+new Vue({
+    //マウントやデータ定義
+    computed:{
+      totalPrice: function () {
+        return this.items.reduce(function (sum, item) {
+            return sum + (item.price * item.quantitiy)
+        }, 0)
+      }
+    }
+})
+```
 
 算出プロパティはメソッドじゃないので呼び出す際に()いりませーん
 
 
 ```
-            totalPriceWithTax: function () {
-                    return Math.floor(this.totalPrice * 1.08)
-            }
+totalPriceWithTax: function () {
+        return Math.floor(this.totalPrice * 1.1)
+}
 ```
 
 算出プロパティに依存した算出プロパティも定義できるよーん
